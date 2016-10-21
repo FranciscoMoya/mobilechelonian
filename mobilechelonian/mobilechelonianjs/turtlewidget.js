@@ -13,24 +13,17 @@ define(['nbextensions/mobilechelonianjs/paper', "jupyter-js-widgets"], function(
         var that = this;
         this.grid_button.click(function (){
             var grid = that.grid;
+	    var canvas = that.canvas;
             if (!that.grid_on) {
                 that.grid_on = true;
                 grid.strokeColor = 'grey';
-                var start = new paper.Point(1,1);
-                grid.moveTo(start);
-                var canvasSize = that.canvas.width;
-                grid.lineTo(start.add([0,canvasSize]));
-                
-                var i;
-                for(i = 20; i <= canvasSize; i += 20){
-                    grid.lineTo(start.add([i,canvasSize]));
-                    grid.lineTo(start.add([i,0]));
-                    grid.lineTo(start.add([i+20,0]));
+                for(var i = 0; i < canvas.width; i += 40){
+                    grid.add([i,0], [i,canvas.height], 
+			     [i+20,canvas.height], [i+20, 0]);
                 }
-                for(i = 20; i <= canvasSize; i += 20){
-                    grid.lineTo(start.add([canvasSize,i]));
-                    grid.lineTo(start.add([0,i]));
-                    grid.lineTo(start.add([0,i+20]));
+                for(i = 0; i < canvas.height; i += 40){
+                    grid.add([canvas.width, i], [0, i], 
+			     [0, i+20], [canvas.width, i+20]);
                 }
                 paper.view.draw();
             } else {
@@ -71,7 +64,7 @@ define(['nbextensions/mobilechelonianjs/paper', "jupyter-js-widgets"], function(
         this.changRot = 0;
         
         this.path = new paper.Path();
-        this.path.strokeWidth = 3;
+        this.path.strokeWidth = 1;
         this.path.add(new paper.Point(this.veryOldX, this.veryOldY));
         
         /* 
@@ -103,7 +96,7 @@ define(['nbextensions/mobilechelonianjs/paper', "jupyter-js-widgets"], function(
             if (this.newPen != this.oldPen || this.newColour != this.oldColour){
                 //Changing pen - start a new path
                 this.path = new paper.Path();
-                this.path.strokeWidth = 3;
+                this.path.strokeWidth = 1;
                 this.path.add(new paper.Point(this.oldX, this.oldY));
             }
 
@@ -321,8 +314,8 @@ define(['nbextensions/mobilechelonianjs/paper', "jupyter-js-widgets"], function(
             
             var canvas = document.createElement('canvas');
             canvas.id     = "canvas1";
-            canvas.width  = 401;
-            canvas.height = 401;
+            canvas.width  = 400;
+            canvas.height = 400;
             canvas.resize;
 
             canvasDiv.append(canvas);

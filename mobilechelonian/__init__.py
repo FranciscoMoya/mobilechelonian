@@ -10,6 +10,8 @@ __version__ = '0.3'
 
 def install_js():
     pkgdir = os.path.dirname(__file__)
+    nbextensions.install_nbextension('https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.2/paper-core.js',
+                                     user=True)
     nbextensions.install_nbextension(os.path.join(pkgdir, 'mobilechelonianjs'),
                                      user=True)
 
@@ -21,7 +23,6 @@ class Turtle(widgets.DOMWidget):
     points = List(sync=True)
 
     SIZE = 400
-    OFFSET = 20
     def __init__(self):
         '''Create a Turtle.
         
@@ -99,17 +100,6 @@ class Turtle(widgets.DOMWidget):
         '''
         self.posX += round(num * math.sin(math.radians(self.bearing)), 1)
         self.posY -= round(num * math.cos(math.radians(self.bearing)), 1)
-
-        if self.posX < Turtle.OFFSET:
-            self.posX = Turtle.OFFSET
-        if self.posY < Turtle.OFFSET:
-            self.posY = Turtle.OFFSET
-
-        if self.posX > Turtle.SIZE - Turtle.OFFSET:
-            self.posX = Turtle.SIZE - Turtle.OFFSET
-        if self.posY > Turtle.SIZE - Turtle.OFFSET:
-            self.posY = Turtle.SIZE - Turtle.OFFSET
-
         self.b_change = 0
         self._add_point()
 
@@ -122,16 +112,6 @@ class Turtle(widgets.DOMWidget):
         '''
         self.posX -= round(num * math.sin(math.radians(self.bearing)), 1)
         self.posY += round(num * math.cos(math.radians(self.bearing)), 1)
-
-        if self.posX < Turtle.OFFSET:
-            self.posX = Turtle.OFFSET
-        if self.posY < Turtle.OFFSET:
-            self.posY = Turtle.OFFSET
-
-        if self.posX > Turtle.SIZE - Turtle.OFFSET:
-            self.posX = Turtle.SIZE - Turtle.OFFSET
-        if self.posY > Turtle.SIZE - Turtle.OFFSET:
-            self.posY = Turtle.SIZE - Turtle.OFFSET
 
         self.b_change = 0
         self._add_point()
@@ -179,6 +159,17 @@ class Turtle(widgets.DOMWidget):
             self.bearing = (temp - extent)
         self.speedVar = tempSpeed
 
+    def goto(self, x, y):
+        '''Move the Turtle to a given absolute position.
+
+        Example::
+        
+            t.goto(100,100)
+        '''
+        self.posX = 200 + x
+        self.posY = 200 + y
+        self._add_point()
+
     def home(self):
         '''Move the Turtle to its home position.
 
@@ -186,11 +177,9 @@ class Turtle(widgets.DOMWidget):
         
             t.home()
         '''
-        self.posX = 200
-        self.posY = 200
         if 90 < self.bearing <=270:
             self.b_change = - (self.bearing - 90)
         else:
             self.b_change = 90 - self.bearing
         self.bearing = 90
-        self._add_point()
+        self.goto(0,0)
