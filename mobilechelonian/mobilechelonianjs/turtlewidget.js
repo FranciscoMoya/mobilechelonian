@@ -7,7 +7,7 @@ define(['nbextensions/mobilechelonianjs/paper', "jupyter-js-widgets"], function(
         paper.setup(this.canvas);
         
         /* adds grid for user to turn off / on, helps see what the turtle is doing */
-        this.grid = new paper.Path();
+        this.grid = new paper.Group();
         this.grid_on = false;
         this.grid_button = grid_button;
         var that = this;
@@ -16,15 +16,13 @@ define(['nbextensions/mobilechelonianjs/paper', "jupyter-js-widgets"], function(
 	    var canvas = that.canvas;
             if (!that.grid_on) {
                 that.grid_on = true;
+                for(var i = 20; i < canvas.width; i += 20){
+                    grid.addChild(new paper.Path([i,0], [i,canvas.height]));
+                }
+                for(var i = 20; i < canvas.height; i += 20){
+                    grid.addChild(new paper.Path([0, i], [canvas.width, i]));
+                }
                 grid.strokeColor = 'grey';
-                for(var i = 0; i < canvas.width; i += 40){
-                    grid.add([i,0], [i,canvas.height], 
-			     [i+20,canvas.height], [i+20, 0]);
-                }
-                for(i = 0; i < canvas.height; i += 40){
-                    grid.add([canvas.width, i], [0, i], 
-			     [0, i+20], [canvas.width, i+20]);
-                }
                 paper.view.draw();
             } else {
                 that.grid_on = false;
@@ -82,6 +80,7 @@ define(['nbextensions/mobilechelonianjs/paper', "jupyter-js-widgets"], function(
             this.oldY = this.points[count].y;
             this.oldRotation = this.points[count].b;
             this.turtleSpeed = this.points[count].s;
+            this.path.strokeWidth = this.points[count].w;
             this.newPen = this.points[count+1].p;
             this.newColour = this.points[count+1].lc;
             this.newX = this.points[count+1].x;
@@ -91,13 +90,14 @@ define(['nbextensions/mobilechelonianjs/paper', "jupyter-js-widgets"], function(
             this.count++;
             this.veryOldX = this.oldX;
             this.veryOldY = this.oldY;
+
             //path.add(new paper.Point(veryOldX, veryOldY));
 
             if (this.newPen != this.oldPen || this.newColour != this.oldColour){
                 //Changing pen - start a new path
                 this.path = new paper.Path();
-                this.path.strokeWidth = 1;
-                this.path.add(new paper.Point(this.oldX, this.oldY));
+                this.path.strokeWidth = this.points[count].w;
+                this.path.add([this.oldX, this.oldY]);
             }
 
             // Good test command to see what the input is from the string
