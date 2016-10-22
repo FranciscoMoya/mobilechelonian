@@ -10,9 +10,9 @@ __version__ = '0.3'
 
 def install_js():
     pkgdir = os.path.dirname(__file__)
-    nbextensions.install_nbextension('https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.2/paper-core.js',
+    nbextensions.install_nbextension('https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.2/paper-core.min.js',
                                      user=True)
-    nbextensions.install_nbextension(os.path.join(pkgdir, 'mobilechelonianjs'),
+    nbextensions.install_nbextension('https://cdn.rawgit.com/FranciscoMoya/mobilechelonian/master/mobilechelonian/mobilechelonianjs/turtlewidget.js',
                                      user=True)
 
 class Turtle(widgets.DOMWidget):
